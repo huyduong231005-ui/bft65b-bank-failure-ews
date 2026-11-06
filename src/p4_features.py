@@ -50,6 +50,9 @@ def main() -> None:
     ft = (build_features(panel.lazy())
           .filter(pl.col("label_complete"))
           .with_columns(split_expr().alias("split"))
+          # joins do not keep row order in Polars 2; HistGradientBoosting bins on a row
+          # subsample, so a fixed order is needed for identical results on every rerun
+          .sort("CERT", "REPDTE")
           .collect())
     feats = feature_names(ft)
     keep = ["CERT", "REPDTE", "q", "STNAME", "y", "split", "ASSET", "_next_fail_date", *feats]

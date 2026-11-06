@@ -6,4 +6,8 @@ data_proc/
 data_bench/
 models/
 outputs_official/
+BAN_GIAO.md
+BAN_GIAO.docx
 logs_download.txt
+handover_figs/
+outputs/risk_*.png
