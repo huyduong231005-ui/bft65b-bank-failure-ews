@@ -1,0 +1,6 @@
+{
+ "model": "HGB lr=0.05 leaves=15",
+ "fp_cost": 0.01,
+ "threshold": 0.005515801751419963,
+ "baseline_threshold": 0.31252933919969406
+}

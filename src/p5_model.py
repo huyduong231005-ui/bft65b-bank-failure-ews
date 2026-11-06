@@ -99,7 +99,8 @@ def cv(dev: pl.DataFrame, feats: list[str], make) -> tuple[dict, pl.DataFrame]:
 def loss_given_failure() -> dict:
     """Missed-failure cost estimated from the data: DIF loss (COST) of dev-period failures."""
     f = (pl.read_parquet(LAKE / "failures.parquet")
-         .filter((pl.col("RESTYPE") == "FAILURE") & pl.col("FAILDATE").is_between(pl.date(1984, 1, 1), pl.date(2009, 12, 31)))
+         # development period only (1984-2008); the 2009 gap year is not used for any choice
+         .filter((pl.col("RESTYPE") == "FAILURE") & pl.col("FAILDATE").is_between(pl.date(1984, 1, 1), pl.date(2008, 12, 31)))
          .filter(pl.col("COST").is_not_null() & (pl.col("QBFASSET") > 0)))
     return {"failures with cost": f.height, "median COST $k": float(f["COST"].median()),
             "median loss rate % of assets": float((f["COST"] / f["QBFASSET"] * 100).median())}
@@ -155,6 +156,10 @@ def main() -> None:
                          **confusion(oofs[name]["y"].to_numpy(), oofs[name]["s"].to_numpy(), t, c)})
     save_md(pl.DataFrame(sens).with_columns(pl.col(pl.Float64).round(4)), OUT / "p5_threshold_dev.md",
             f"Threshold chosen on dev OOF predictions. Loss given failure from data: {lgf}")
+    # exact (unrounded) base-case thresholds, read by predict.py
+    (OUT / "p5_threshold.json").write_text(json.dumps({
+        "model": best, "fp_cost": FP_COST_BASE, "threshold": thr[(best, FP_COST_BASE)],
+        "baseline_threshold": thr[("baseline logit (6 CAMELS ratios)", FP_COST_BASE)]}, indent=1))
 
     # ---------------- single evaluation on the test period
     final, res = {}, []

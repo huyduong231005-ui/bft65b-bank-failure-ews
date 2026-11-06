@@ -28,7 +28,8 @@ SHOW = ["CERT", "NAME", "STNAME", "REPDTE", "ASSET", "cap_eq_ta", "aq_noncurrent
 
 
 def load_model(feats: list[str]):
-    if MODEL.exists():
+    # reuse the cached model only if it is newer than the feature table it was trained on
+    if MODEL.exists() and MODEL.stat().st_mtime > (PROC / "features.parquet").stat().st_mtime:
         return joblib.load(MODEL)
     ft = pl.read_parquet(PROC / "features.parquet").filter(pl.col("split") == "dev")
     model = hgb(0.05, 15).fit(ft.select(feats).to_numpy(), ft["y"].to_numpy())
@@ -38,10 +39,8 @@ def load_model(feats: list[str]):
 
 
 def threshold() -> float:
-    """Base-case alarm threshold chosen on dev (outputs/p5_threshold_dev.md, cost ratio 0.01)."""
-    row = [ln for ln in (OUT / "p5_threshold_dev.md").read_text(encoding="utf-8").splitlines()
-           if ln.startswith("| HGB") and "| 0.01 " in ln][0]
-    return float(row.split("|")[3])
+    """Base-case alarm threshold chosen on dev by p5_model.py (exact value, not the rounded table)."""
+    return json.loads((OUT / "p5_threshold.json").read_text())["threshold"]
 
 
 PAL = ["#D55E00", "#0072B2", "#009E73", "#E69F00", "#CC79A7", "#56B4E9", "#000000"]  # Okabe-Ito

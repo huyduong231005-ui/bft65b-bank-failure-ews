@@ -1,4 +1,4 @@
-### Threshold chosen on dev OOF predictions. Loss given failure from data: {'failures with cost': 2456, 'median COST $k': 9494.24237, 'median loss rate % of assets': 21.151285114127624}
+### Threshold chosen on dev OOF predictions. Loss given failure from data: {'failures with cost': 2316, 'median COST $k': 8381.673354999999, 'median loss rate % of assets': 20.776232881194574}
 
 | model                            | false-alarm cost / missed-failure loss | threshold | alarms | TP   | FP    | FN  | recall | precision | cost (missed=1) |
 |----------------------------------|----------------------------------------|-----------|--------|------|-------|-----|--------|-----------|-----------------|

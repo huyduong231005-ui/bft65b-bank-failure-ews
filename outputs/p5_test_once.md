@@ -1,4 +1,4 @@
-### TEST period 2010-03-31 - 2025-06-30, scored once at 2026-11-06 18:53 (false-alarm cost = 0.01 x missed failure)
+### TEST period 2010-03-31 - 2025-06-30, scored once at 2026-11-06 19:37 (false-alarm cost = 0.01 x missed failure)
 
 | model                            | PR-AUC | ROC-AUC | recall@top5% | Brier  | threshold | alarms | TP   | FP    | FN | recall | precision | cost (missed=1) |
 |----------------------------------|--------|---------|--------------|--------|-----------|--------|------|-------|----|--------|-----------|-----------------|
