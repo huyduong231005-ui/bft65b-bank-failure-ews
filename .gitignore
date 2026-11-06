@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+data_raw/
+data_lake/
+data_proc/
+data_bench/
+models/
+outputs_official/
+logs_download.txt

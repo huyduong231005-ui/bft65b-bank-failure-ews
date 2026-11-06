@@ -1,0 +1,217 @@
+== Physical Plan ==
+AdaptiveSparkPlan (38)
++- Project (37)
+   +- SortMergeJoin LeftOuter (36)
+      :- Sort (22)
+      :  +- Exchange (21)
+      :     +- Project (20)
+      :        +- Window (19)
+      :           +- Sort (18)
+      :              +- Window (17)
+      :                 +- Window (16)
+      :                    +- Sort (15)
+      :                       +- Exchange (14)
+      :                          +- Project (13)
+      :                             +- SortMergeJoin LeftOuter (12)
+      :                                :- Sort (6)
+      :                                :  +- Exchange (5)
+      :                                :     +- Project (4)
+      :                                :        +- Project (3)
+      :                                :           +- Filter (2)
+      :                                :              +- Scan parquet  (1)
+      :                                +- Sort (11)
+      :                                   +- Exchange (10)
+      :                                      +- Project (9)
+      :                                         +- Filter (8)
+      :                                            +- Scan parquet  (7)
+      +- Sort (35)
+         +- HashAggregate (34)
+            +- Exchange (33)
+               +- HashAggregate (32)
+                  +- Project (31)
+                     +- BroadcastHashJoin Inner BuildRight (30)
+                        :- Project (25)
+                        :  +- Filter (24)
+                        :     +- Scan parquet  (23)
+                        +- BroadcastExchange (29)
+                           +- Project (28)
+                              +- Filter (27)
+                                 +- Scan parquet  (26)
+
+
+(1) Scan parquet 
+Output [10]: [CERT#220L, REPDTE#221, ASSET#223, DEP#224, EQ#226, BRO#227, LNLSGR#230, NCLNLS#236, NTLNLS#240, NETINC#242]
+Batched: true
+Location: InMemoryFileIndex [file:/D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 entries]
+PushedFilters: [IsNotNull(ASSET), GreaterThan(ASSET,0.0)]
+ReadSchema: struct<CERT:bigint,REPDTE:date,ASSET:double,DEP:double,EQ:double,BRO:double,LNLSGR:double,NCLNLS:double,NTLNLS:double,NETINC:double>
+
+(2) Filter
+Input [10]: [CERT#220L, REPDTE#221, ASSET#223, DEP#224, EQ#226, BRO#227, LNLSGR#230, NCLNLS#236, NTLNLS#240, NETINC#242]
+Condition : (isnotnull(ASSET#223) AND (ASSET#223 > 0.0))
+
+(3) Project
+Output [12]: [CERT#220L, REPDTE#221, ASSET#223, EQ#226, NCLNLS#236, LNLSGR#230, NETINC#242, NTLNLS#240, BRO#227, DEP#224, (((year(REPDTE#221) * 4) + quarter(REPDTE#221)) - 1) AS q#270, (4.0 / cast(quarter(REPDTE#221) as double)) AS ann#271]
+Input [10]: [CERT#220L, REPDTE#221, ASSET#223, DEP#224, EQ#226, BRO#227, LNLSGR#230, NCLNLS#236, NTLNLS#240, NETINC#242]
+
+(4) Project
+Output [8]: [CERT#220L, REPDTE#221, q#270, CASE WHEN (ASSET#223 > 0.0) THEN ((EQ#226 / ASSET#223) * 100.0) END AS cap_eq_ta#274, CASE WHEN (LNLSGR#230 > 0.0) THEN ((NCLNLS#236 / LNLSGR#230) * 100.0) END AS aq_noncurrent#275, CASE WHEN (ASSET#223 > 0.0) THEN (((NETINC#242 * ann#271) / ASSET#223) * 100.0) END AS earn_roa#276, CASE WHEN (LNLSGR#230 > 0.0) THEN (((NTLNLS#240 * ann#271) / LNLSGR#230) * 100.0) END AS aq_nco#277, CASE WHEN (DEP#224 > 0.0) THEN ((BRO#227 / DEP#224) * 100.0) END AS liq_brokered_dep#278]
+Input [12]: [CERT#220L, REPDTE#221, ASSET#223, EQ#226, NCLNLS#236, LNLSGR#230, NETINC#242, NTLNLS#240, BRO#227, DEP#224, q#270, ann#271]
+
+(5) Exchange
+Input [8]: [CERT#220L, REPDTE#221, q#270, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278]
+Arguments: hashpartitioning(CERT#220L, q#270, 200), ENSURE_REQUIREMENTS, [plan_id=789]
+
+(6) Sort
+Input [8]: [CERT#220L, REPDTE#221, q#270, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278]
+Arguments: [CERT#220L ASC NULLS FIRST, q#270 ASC NULLS FIRST], false, 0
+
+(7) Scan parquet 
+Output [6]: [CERT#285L, REPDTE#286, ASSET#288, EQ#291, LNLSGR#295, NCLNLS#301]
+Batched: true
+Location: InMemoryFileIndex [file:/D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 entries]
+PushedFilters: [IsNotNull(ASSET), GreaterThan(ASSET,0.0), IsNotNull(CERT)]
+ReadSchema: struct<CERT:bigint,REPDTE:date,ASSET:double,EQ:double,LNLSGR:double,NCLNLS:double>
+
+(8) Filter
+Input [6]: [CERT#285L, REPDTE#286, ASSET#288, EQ#291, LNLSGR#295, NCLNLS#301]
+Condition : (((isnotnull(ASSET#288) AND (ASSET#288 > 0.0)) AND isnotnull(CERT#285L)) AND isnotnull(((((year(REPDTE#286) * 4) + quarter(REPDTE#286)) - 1) + 4)))
+
+(9) Project
+Output [4]: [CERT#285L, ((((year(REPDTE#286) * 4) + quarter(REPDTE#286)) - 1) + 4) AS q#279, CASE WHEN (ASSET#288 > 0.0) THEN ((EQ#291 / ASSET#288) * 100.0) END AS l4_eq#280, CASE WHEN (LNLSGR#295 > 0.0) THEN ((NCLNLS#301 / LNLSGR#295) * 100.0) END AS l4_ncl#281]
+Input [6]: [CERT#285L, REPDTE#286, ASSET#288, EQ#291, LNLSGR#295, NCLNLS#301]
+
+(10) Exchange
+Input [4]: [CERT#285L, q#279, l4_eq#280, l4_ncl#281]
+Arguments: hashpartitioning(CERT#285L, q#279, 200), ENSURE_REQUIREMENTS, [plan_id=790]
+
+(11) Sort
+Input [4]: [CERT#285L, q#279, l4_eq#280, l4_ncl#281]
+Arguments: [CERT#285L ASC NULLS FIRST, q#279 ASC NULLS FIRST], false, 0
+
+(12) SortMergeJoin
+Left keys [2]: [CERT#220L, q#270]
+Right keys [2]: [CERT#285L, q#279]
+Join type: LeftOuter
+Join condition: None
+
+(13) Project
+Output [10]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, (cap_eq_ta#274 - l4_eq#280) AS d4_cap_eq_ta#335, (aq_noncurrent#275 - l4_ncl#281) AS d4_aq_noncurrent#336]
+Input [12]: [CERT#220L, REPDTE#221, q#270, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, CERT#285L, q#279, l4_eq#280, l4_ncl#281]
+
+(14) Exchange
+Input [10]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336]
+Arguments: hashpartitioning(REPDTE#221, 200), ENSURE_REQUIREMENTS, [plan_id=796]
+
+(15) Sort
+Input [10]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336]
+Arguments: [REPDTE#221 ASC NULLS FIRST, cap_eq_ta#274 ASC NULLS LAST], false, 0
+
+(16) Window
+Input [10]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336]
+Arguments: [rank(cap_eq_ta#274) windowspecdefinition(REPDTE#221, cap_eq_ta#274 ASC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS _we0#348], [REPDTE#221], [cap_eq_ta#274 ASC NULLS LAST]
+
+(17) Window
+Input [11]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, _we0#348]
+Arguments: [count(cap_eq_ta#274) windowspecdefinition(REPDTE#221, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS _we2#350L], [REPDTE#221]
+
+(18) Sort
+Input [12]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, _we0#348, _we2#350L]
+Arguments: [REPDTE#221 ASC NULLS FIRST, knownfloatingpointnormalized(normalizenanandzero(cap_eq_ta#274)) ASC NULLS FIRST], false, 0
+
+(19) Window
+Input [12]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, _we0#348, _we2#350L]
+Arguments: [count(1) windowspecdefinition(REPDTE#221, cap_eq_ta#274, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS _we1#349L], [REPDTE#221, knownfloatingpointnormalized(normalizenanandzero(cap_eq_ta#274))]
+
+(20) Project
+Output [11]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, CASE WHEN isnotnull(cap_eq_ta#274) THEN ((cast(_we0#348 as double) + (cast((_we1#349L - 1) as double) / 2.0)) / cast(_we2#350L as double)) END AS pr_cap_eq_ta#337]
+Input [13]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, _we0#348, _we2#350L, _we1#349L]
+
+(21) Exchange
+Input [11]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, pr_cap_eq_ta#337]
+Arguments: hashpartitioning(CERT#220L, q#270, 200), ENSURE_REQUIREMENTS, [plan_id=813]
+
+(22) Sort
+Input [11]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, pr_cap_eq_ta#337]
+Arguments: [CERT#220L ASC NULLS FIRST, q#270 ASC NULLS FIRST], false, 0
+
+(23) Scan parquet 
+Output [3]: [CERT#351L, REPDTE#352, ASSET#354]
+Batched: true
+Location: InMemoryFileIndex [file:/D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 entries]
+PushedFilters: [IsNotNull(ASSET), GreaterThan(ASSET,0.0), IsNotNull(CERT)]
+ReadSchema: struct<CERT:bigint,REPDTE:date,ASSET:double>
+
+(24) Filter
+Input [3]: [CERT#351L, REPDTE#352, ASSET#354]
+Condition : (((isnotnull(ASSET#354) AND (ASSET#354 > 0.0)) AND isnotnull((((year(REPDTE#352) * 4) + quarter(REPDTE#352)) - 1))) AND isnotnull(CERT#351L))
+
+(25) Project
+Output [2]: [CERT#351L, (((year(REPDTE#352) * 4) + quarter(REPDTE#352)) - 1) AS q#391]
+Input [3]: [CERT#351L, REPDTE#352, ASSET#354]
+
+(26) Scan parquet 
+Output [3]: [FAILDATE#263, CERT#264L, RESTYPE#266]
+Batched: true
+Location: InMemoryFileIndex [file:/D:/bft65b-ews/data_lake/failures.parquet]
+PushedFilters: [IsNotNull(RESTYPE), IsNotNull(FAILDATE), EqualTo(RESTYPE,FAILURE), GreaterThanOrEqual(FAILDATE,1984-01-01), IsNotNull(CERT)]
+ReadSchema: struct<FAILDATE:date,CERT:bigint,RESTYPE:string>
+
+(27) Filter
+Input [3]: [FAILDATE#263, CERT#264L, RESTYPE#266]
+Condition : (((((isnotnull(RESTYPE#266) AND isnotnull(FAILDATE#263)) AND (RESTYPE#266 = FAILURE)) AND (FAILDATE#263 >= 1984-01-01)) AND isnotnull((((year(FAILDATE#263) * 4) + quarter(FAILDATE#263)) - 1))) AND isnotnull(CERT#264L))
+
+(28) Project
+Output [2]: [CERT#264L, (((year(FAILDATE#263) * 4) + quarter(FAILDATE#263)) - 1) AS fq#283]
+Input [3]: [FAILDATE#263, CERT#264L, RESTYPE#266]
+
+(29) BroadcastExchange
+Input [2]: [CERT#264L, fq#283]
+Arguments: HashedRelationBroadcastMode(List(input[0, bigint, true]),false), [plan_id=804]
+
+(30) BroadcastHashJoin
+Left keys [1]: [CERT#351L]
+Right keys [1]: [CERT#264L]
+Join type: Inner
+Join condition: (((fq#283 - q#391) >= 1) AND ((fq#283 - q#391) <= 4))
+
+(31) Project
+Output [2]: [CERT#351L, q#391]
+Input [4]: [CERT#351L, q#391, CERT#264L, fq#283]
+
+(32) HashAggregate
+Input [2]: [CERT#351L, q#391]
+Keys [2]: [CERT#351L, q#391]
+Functions: []
+Aggregate Attributes: []
+Results [2]: [CERT#351L, q#391]
+
+(33) Exchange
+Input [2]: [CERT#351L, q#391]
+Arguments: hashpartitioning(CERT#351L, q#391, 200), ENSURE_REQUIREMENTS, [plan_id=809]
+
+(34) HashAggregate
+Input [2]: [CERT#351L, q#391]
+Keys [2]: [CERT#351L, q#391]
+Functions: []
+Aggregate Attributes: []
+Results [3]: [CERT#351L, q#391, 1 AS y#284]
+
+(35) Sort
+Input [3]: [CERT#351L, q#391, y#284]
+Arguments: [CERT#351L ASC NULLS FIRST, q#391 ASC NULLS FIRST], false, 0
+
+(36) SortMergeJoin
+Left keys [2]: [CERT#220L, q#270]
+Right keys [2]: [CERT#351L, q#391]
+Join type: LeftOuter
+Join condition: None
+
+(37) Project
+Output [11]: [CERT#220L, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, pr_cap_eq_ta#337, coalesce(y#284, 0) AS y#401]
+Input [14]: [CERT#220L, q#270, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, pr_cap_eq_ta#337, CERT#351L, q#391, y#284]
+
+(38) AdaptiveSparkPlan
+Output [11]: [CERT#220L, REPDTE#221, cap_eq_ta#274, aq_noncurrent#275, earn_roa#276, aq_nco#277, liq_brokered_dep#278, d4_cap_eq_ta#335, d4_aq_noncurrent#336, pr_cap_eq_ta#337, y#401]
+Arguments: isFinalPlan=false
+

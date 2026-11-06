@@ -1,0 +1,50 @@
+﻿.\.venv\Scripts\python.exe : WARNING: Using incubator modules: jdk.incubator.vector
+At line:1 char:353
++ ... ols\jdk17'; .\.venv\Scripts\python.exe src\p3_processing.py *> output ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (WARNING: Using ...ncubator.vector:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+26/11/06 17:06:32 WARN Shell: Did not find winutils.exe: java.io.FileNotFoundException: java.io.FileNotFoundException: 
+HADOOP_HOME and hadoop.home.dir are unset. -see https://cwiki.apache.org/confluence/display/HADOOP2/WindowsProblems
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/11/06 17:06:33 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java 
+classes where applicable
+shape: (10, 5)
+┌──────────────────┬───────────────┬─────────────────┬──────────────────────┬─────────────────┐
+│ column           ┆ max |polars - ┆ null mismatches ┆ max |polars - spark| ┆ null mismatches │
+│ ---              ┆ pandas|       ┆ ---             ┆ ---                  ┆ spark           │
+│ str              ┆ ---           ┆ i64             ┆ f64                  ┆ ---             │
+│                  ┆ f64           ┆                 ┆                      ┆ i64             │
+╞══════════════════╪═══════════════╪═════════════════╪══════════════════════╪═════════════════╡
+│ cap_eq_ta        ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ aq_noncurrent    ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ earn_roa         ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ aq_nco           ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ liq_brokered_dep ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ d4_cap_eq_ta     ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ d4_aq_noncurrent ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ pr_cap_eq_ta     ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ y                ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+│ rows             ┆ 0.0           ┆ 0               ┆ 0.0                  ┆ 0               │
+└──────────────────┴───────────────┴─────────────────┴──────────────────────┴─────────────────┘
+{'engine': 'pandas', 'scale': 1, 'seconds': 3.15, 'peak_mb': 1500, 'rows': 1682616, 'sums': {'cap_eq_ta': 17913313.876469113, 'aq_noncurrent': 3120171.023364553, 'earn_roa': 2476086.690163314, 'aq_nco': 1033606.3857172083, 'liq_brokered_dep': 2900187.060648128, 'd4_cap_eq_ta': -388328.0661375258, 'd4_aq_noncurrent': 85497.59726858643, 'pr_cap_eq_ta': 839319.0, 'y': 10881.0}}
+{'engine': 'polars_eager', 'scale': 1, 'seconds': 0.58, 'peak_mb': 1764, 'rows': 1682616, 'sums': {'cap_eq_ta': 17913313.876469113, 'aq_noncurrent': 3120171.023364553, 'earn_roa': 2476086.690163314, 'aq_nco': 1033606.3857172083, 'liq_brokered_dep': 2900187.060648128, 'd4_cap_eq_ta': -388328.0661375258, 'd4_aq_noncurrent': 85497.59726858643, 'pr_cap_eq_ta': 839319.0, 'y': 10881.0}}
+{'engine': 'polars_lazy', 'scale': 1, 'seconds': 0.25, 'peak_mb': 698, 'rows': 1682616, 'sums': {'cap_eq_ta': 17913313.876469113, 'aq_noncurrent': 3120171.0233645528, 'earn_roa': 2476086.6901633143, 'aq_nco': 1033606.3857172083, 'liq_brokered_dep': 2900187.060648128, 'd4_cap_eq_ta': -388328.0661375257, 'd4_aq_noncurrent': 85497.59726858644, 'pr_cap_eq_ta': 839319.0, 'y': 10881.0}}
+{'engine': 'polars_streaming', 'scale': 1, 'seconds': 0.25, 'peak_mb': 668, 'rows': 1682616, 'sums': {'cap_eq_ta': 17913313.87646911, 'aq_noncurrent': 3120171.0233645537, 'earn_roa': 2476086.690163314, 'aq_nco': 1033606.3857172084, 'liq_brokered_dep': 2900187.0606481275, 'd4_cap_eq_ta': -388328.0661375257, 'd4_aq_noncurrent': 85497.59726858643, 'pr_cap_eq_ta': 839318.9999999999, 'y': 10881.0}}
+{'engine': 'spark', 'scale': 1, 'seconds': 24.03, 'peak_mb': 2583, 'rows': 1682616, 'sums': {'cap_eq_ta': 17913313.87646913, 'aq_noncurrent': 3120171.0233645486, 'earn_roa': 2476086.690163306, 'aq_nco': 1033606.385717206, 'liq_brokered_dep': 2900187.0606481303, 'd4_cap_eq_ta': -388328.0661375271, 'd4_aq_noncurrent': 85497.5972685858, 'pr_cap_eq_ta': 839319.0000000002, 'y': 10881.0}}
+{'engine': 'pandas', 'scale': 4, 'seconds': 10.27, 'peak_mb': 5559, 'rows': 6730464, 'sums': {'cap_eq_ta': 71653255.50587645, 'aq_noncurrent': 12480684.093458213, 'earn_roa': 9904346.760653257, 'aq_nco': 4134425.542868834, 'liq_brokered_dep': 11600748.24259251, 'd4_cap_eq_ta': -1553312.2645501026, 'd4_aq_noncurrent': 341990.3890743457, 'pr_cap_eq_ta': 3357021.0, 'y': 43524.0}}
+{'engine': 'polars_eager', 'scale': 4, 'seconds': 1.91, 'peak_mb': 6067, 'rows': 6730464, 'sums': {'cap_eq_ta': 71653255.50587645, 'aq_noncurrent': 12480684.093458213, 'earn_roa': 9904346.760653257, 'aq_nco': 4134425.542868834, 'liq_brokered_dep': 11600748.24259251, 'd4_cap_eq_ta': -1553312.2645501026, 'd4_aq_noncurrent': 341990.3890743458, 'pr_cap_eq_ta': 3357021.000000001, 'y': 43524.0}}
+{'engine': 'polars_lazy', 'scale': 4, 'seconds': 0.97, 'peak_mb': 1666, 'rows': 6730464, 'sums': {'cap_eq_ta': 71653255.50587642, 'aq_noncurrent': 12480684.093458215, 'earn_roa': 9904346.76065326, 'aq_nco': 4134425.542868834, 'liq_brokered_dep': 11600748.242592512, 'd4_cap_eq_ta': -1553312.2645501029, 'd4_aq_noncurrent': 341990.389074346, 'pr_cap_eq_ta': 3357020.9999999977, 'y': 43524.0}}
+{'engine': 'polars_streaming', 'scale': 4, 'seconds': 0.99, 'peak_mb': 1661, 'rows': 6730464, 'sums': {'cap_eq_ta': 71653255.50587645, 'aq_noncurrent': 12480684.093458215, 'earn_roa': 9904346.760653257, 'aq_nco': 4134425.542868834, 'liq_brokered_dep': 11600748.24259251, 'd4_cap_eq_ta': -1553312.2645501029, 'd4_aq_noncurrent': 341990.3890743458, 'pr_cap_eq_ta': 3357020.9999999995, 'y': 43524.0}}
+{'engine': 'spark', 'scale': 4, 'seconds': 34.98, 'peak_mb': 4259, 'rows': 6730464, 'sums': {'cap_eq_ta': 71653255.50587595, 'aq_noncurrent': 12480684.093458595, 'earn_roa': 9904346.760653136, 'aq_nco': 4134425.542868773, 'liq_brokered_dep': 11600748.24259251, 'd4_cap_eq_ta': -1553312.2645501408, 'd4_aq_noncurrent': 341990.38907435455, 'pr_cap_eq_ta': 3357021.000000002, 'y': 43524.0}}
+{'engine': 'pandas', 'scale': 16, 'seconds': 61.16, 'peak_mb': 15459, 'rows': 26921856, 'sums': {'cap_eq_ta': 286613022.0235058, 'aq_noncurrent': 49922736.373832844, 'earn_roa': 39617387.04261302, 'aq_nco': 16537702.17147533, 'liq_brokered_dep': 46402992.97037004, 'd4_cap_eq_ta': -6213249.058200411, 'd4_aq_noncurrent': 1367961.5562973828, 'pr_cap_eq_ta': 13427829.0, 'y': 174096.0}}
+{'engine': 'polars_eager', 'scale': 16, 'seconds': 24.68, 'peak_mb': 17903, 'rows': 26921856, 'sums': {'cap_eq_ta': 286613022.0235058, 'aq_noncurrent': 49922736.373832844, 'earn_roa': 39617387.04261302, 'aq_nco': 16537702.17147533, 'liq_brokered_dep': 46402992.97037004, 'd4_cap_eq_ta': -6213249.058200411, 'd4_aq_noncurrent': 1367961.5562973828, 'pr_cap_eq_ta': 13427829.0, 'y': 174096.0}}
+{'engine': 'polars_lazy', 'scale': 16, 'seconds': 4.31, 'peak_mb': 5000, 'rows': 26921856, 'sums': {'cap_eq_ta': 286613022.0235058, 'aq_noncurrent': 49922736.37383286, 'earn_roa': 39617387.042613015, 'aq_nco': 16537702.171475334, 'liq_brokered_dep': 46402992.97037004, 'd4_cap_eq_ta': -6213249.0582004115, 'd4_aq_noncurrent': 1367961.5562973828, 'pr_cap_eq_ta': 13427829.0, 'y': 174096.0}}
+{'engine': 'polars_streaming', 'scale': 16, 'seconds': 4.32, 'peak_mb': 4966, 'rows': 26921856, 'sums': {'cap_eq_ta': 286613022.0235058, 'aq_noncurrent': 49922736.37383285, 'earn_roa': 39617387.04261301, 'aq_nco': 16537702.171475336, 'liq_brokered_dep': 46402992.97037003, 'd4_cap_eq_ta': -6213249.0582004115, 'd4_aq_noncurrent': 1367961.5562973837, 'pr_cap_eq_ta': 13427829.0, 'y': 174096.0}}
+{'engine': 'spark', 'scale': 16, 'seconds': 88.4, 'peak_mb': 6313, 'rows': 26921856, 'sums': {'cap_eq_ta': 286613022.0234976, 'aq_noncurrent': 49922736.373835064, 'earn_roa': 39617387.042616844, 'aq_nco': 16537702.171475016, 'liq_brokered_dep': 46402992.97036971, 'd4_cap_eq_ta': -6213249.058200339, 'd4_aq_noncurrent': 1367961.5562974447, 'pr_cap_eq_ta': 13427829.000000263, 'y': 174096.0}}
+SUCCESS: The process with PID 25264 (child process of PID 1228) has been terminated.
+SUCCESS: The process with PID 1228 (child process of PID 7436) has been terminated.
+SUCCESS: The process with PID 7436 (child process of PID 26572) has been terminated.

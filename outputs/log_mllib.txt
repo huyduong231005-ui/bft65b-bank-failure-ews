@@ -1,0 +1,42 @@
+﻿.\.venv\Scripts\python.exe : WARNING: Using incubator modules: jdk.incubator.vector
+At line:1 char:424
++ ... log_p3.txt; .\.venv\Scripts\python.exe src\p5_mllib.py *> outputs\log ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (WARNING: Using ...ncubator.vector:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+26/11/06 17:05:28 WARN Shell: Did not find winutils.exe: java.io.FileNotFoundException: java.io.FileNotFoundException: 
+HADOOP_HOME and hadoop.home.dir are unset. -see https://cwiki.apache.org/confluence/display/HADOOP2/WindowsProblems
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/11/06 17:05:29 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java 
+classes where applicable
+netlib-blas: JNI_OnLoad: dlopen(libopenblas.dll) failed: LoadLibrary failed
+shape: (5, 2)
+┌────────────────────────┬────────────┐
+│ metric                 ┆ value      │
+│ ---                    ┆ ---        │
+│ str                    ┆ f64        │
+╞════════════════════════╪════════════╡
+│ fit seconds (local[*]) ┆ 9.8        │
+│ test PR-AUC            ┆ 0.4913     │
+│ test ROC-AUC           ┆ 0.98       │
+│ dev rows               ┆ 1.262549e6 │
+│ test rows              ┆ 368527.0   │
+└────────────────────────┴────────────┘ shape: (6, 2)
+┌──────────────────┬─────────────────────┐
+│ feature          ┆ coef (standardised) │
+│ ---              ┆ ---                 │
+│ str              ┆ f64                 │
+╞══════════════════╪═════════════════════╡
+│ cap_eq_ta        ┆ -1.5205             │
+│ aq_noncurrent    ┆ 0.4794              │
+│ earn_roa         ┆ -0.488              │
+│ aq_ore_ta        ┆ 0.2815              │
+│ liq_brokered_dep ┆ 0.2555              │
+│ size_log_assets  ┆ -0.0968             │
+└──────────────────┴─────────────────────┘
+SUCCESS: The process with PID 29060 (child process of PID 25020) has been terminated.
+SUCCESS: The process with PID 25020 (child process of PID 1536) has been terminated.
+SUCCESS: The process with PID 1536 (child process of PID 6288) has been terminated.

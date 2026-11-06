@@ -1,0 +1,1 @@
+{"raw panel rows": 1682616, "rows dropped: ASSET <= 0 / null": 0, "rows dropped: on/after failure": 1095, "clean panel rows": 1681521, "rows with complete label (<= 2025Q2)": 1663992, "positive rows (y=1)": 10860, "failed banks with >=1 positive row": 2837, "CERTs with several failure/assistance events": 45}

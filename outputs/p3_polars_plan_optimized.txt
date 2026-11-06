@@ -1,0 +1,53 @@
+ WITH_COLUMNS:
+ [col("y").fill_null([0])] 
+  simple π 11/11 ["CERT", "REPDTE", "cap_eq_ta", ... 8 other columns]
+    LEFT JOIN:
+    LEFT PLAN ON: [col("CERT"), col("q")]
+      simple π 11/11 ["CERT", "REPDTE", "cap_eq_ta", ... 8 other columns]
+         WITH_COLUMNS:
+         [(col("cap_eq_ta") - col("l4_eq")).alias("d4_cap_eq_ta"), (col("aq_noncurrent") - col("l4_ncl")).alias("d4_aq_noncurrent"), (col("cap_eq_ta").rank().over([col("REPDTE")]) / col("cap_eq_ta").count().over([col("REPDTE")]).cast(Float64)).alias("pr_cap_eq_ta")] 
+          LEFT JOIN:
+          LEFT PLAN ON: [col("CERT"), col("q")]
+            CACHE[id: 396dd437-5f2f-4cfb-a208-0cab2968185d]
+              simple π 8/8 ["CERT", "REPDTE", "q", ... 5 other columns]
+                simple π 16/16 ["CERT", "REPDTE", "ASSET", ... 13 other columns]
+                   WITH_COLUMNS:
+                   [when(col("__POLARS_CSER_0x100000013")).then((col("EQ") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("cap_eq_ta"), when(col("__POLARS_CSER_0x100000019")).then((col("NCLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_noncurrent"), when(col("__POLARS_CSER_0x100000013")).then((col("NETINC") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("earn_roa"), when(col("__POLARS_CSER_0x100000019")).then((col("NTLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_nco"), when(col("DEP") > 0.0).then((col("BRO") / col("DEP")) * 100.0).otherwise(null.cast(Float64)).alias("liq_brokered_dep")] 
+                     WITH_COLUMNS:
+                     [(col("ASSET") > 0.0).alias("__POLARS_CSER_0x100000013"), (col("LNLSGR") > 0.0).alias("__POLARS_CSER_0x100000019")] 
+                      simple π 11/11 ["CERT", "REPDTE", "ASSET", ... 8 other columns]
+                         WITH_COLUMNS:
+                         [(col("NETINC") * col("ann")), (col("NTLNLS") * col("ann"))] 
+                          simple π 12/12 ["CERT", "REPDTE", "ASSET", ... 9 other columns]
+                             WITH_COLUMNS:
+                             [(((col("REPDTE").dt.year() * 4) + col("__POLARS_CSER_0x100000002").cast(Int32)) - 1).alias("q"), (4 / col("__POLARS_CSER_0x100000002")).alias("ann")] 
+                               WITH_COLUMNS:
+                               [col("REPDTE").dt.quarter().alias("__POLARS_CSER_0x100000002")] 
+                                Parquet SCAN [D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 other sources]
+                                PROJECT 10/40 COLUMNS
+                                SELECTION: col("ASSET") > 0.0
+                                ESTIMATED ROWS: 1714681
+          RIGHT PLAN ON: [col("CERT"), col("q")]
+            SELECT [col("CERT"), (col("q") + 4), col("cap_eq_ta").alias("l4_eq"), col("aq_noncurrent").alias("l4_ncl")]
+              simple π 4/4 ["CERT", "q", "cap_eq_ta", ... 1 other column]
+                CACHE[id: 396dd437-5f2f-4cfb-a208-0cab2968185d]
+          END LEFT JOIN
+    RIGHT PLAN ON: [col("CERT"), col("q")]
+       WITH_COLUMNS:
+       [1.alias("y")] 
+        UNIQUE[maintain_order: false, keep_strategy: Any] BY None
+          simple π 2/2 ["CERT", "q"]
+            INNER JOIN:
+            FUSED PREDICATE: ((col("fq") - col("q"))).is_between([1, 4])
+            LEFT PLAN ON: [col("CERT")]
+              simple π 2/2 ["CERT", "q"]
+                CACHE[id: 396dd437-5f2f-4cfb-a208-0cab2968185d]
+            RIGHT PLAN ON: [col("CERT")]
+              SELECT [col("CERT"), (((col("FAILDATE").dt.year() * 4) + col("FAILDATE").dt.quarter().cast(Int32)) - 1).alias("fq")]
+                simple π 2/2 ["CERT", "FAILDATE"]
+                  Parquet SCAN [D:/bft65b-ews/data_lake/failures.parquet]
+                  PROJECT 3/9 COLUMNS
+                  SELECTION: (col("FAILDATE") >= 1984-01-01) & (col("RESTYPE") == "FAILURE")
+                  ESTIMATED ROWS: 4117
+            END INNER JOIN
+    END LEFT JOIN

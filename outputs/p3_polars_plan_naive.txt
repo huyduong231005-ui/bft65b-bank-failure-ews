@@ -1,0 +1,69 @@
+SELECT [col("CERT"), col("REPDTE"), col("cap_eq_ta"), col("aq_noncurrent"), col("earn_roa"), col("aq_nco"), col("liq_brokered_dep"), col("d4_cap_eq_ta"), col("d4_aq_noncurrent"), col("pr_cap_eq_ta"), col("y")]
+   WITH_COLUMNS:
+   [col("y").fill_null([0])] 
+    LEFT JOIN:
+    LEFT PLAN ON: [col("CERT"), col("q")]
+       WITH_COLUMNS:
+       [(col("cap_eq_ta") - col("l4_eq")).alias("d4_cap_eq_ta"), (col("aq_noncurrent") - col("l4_ncl")).alias("d4_aq_noncurrent"), (col("cap_eq_ta").rank().over([col("REPDTE")]) / col("cap_eq_ta").count().over([col("REPDTE")]).cast(Float64)).alias("pr_cap_eq_ta")] 
+        LEFT JOIN:
+        LEFT PLAN ON: [col("CERT"), col("q")]
+           WITH_COLUMNS:
+           [when(col("ASSET") > 0.0).then((col("EQ") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("cap_eq_ta"), when(col("LNLSGR") > 0.0).then((col("NCLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_noncurrent"), when(col("ASSET") > 0.0).then((col("NETINC") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("earn_roa"), when(col("LNLSGR") > 0.0).then((col("NTLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_nco"), when(col("DEP") > 0.0).then((col("BRO") / col("DEP")) * 100.0).otherwise(null.cast(Float64)).alias("liq_brokered_dep")] 
+             WITH_COLUMNS:
+             [(col("NETINC") * col("ann")), (col("NTLNLS") * col("ann"))] 
+               WITH_COLUMNS:
+               [(((col("REPDTE").dt.year() * 4) + col("REPDTE").dt.quarter().cast(Int32)) - 1).alias("q"), (4 / col("REPDTE").dt.quarter()).alias("ann")] 
+                FILTER col("ASSET") > 0.0
+                FROM
+                  SELECT [col("CERT"), col("REPDTE"), col("ASSET"), col("EQ"), col("NCLNLS"), col("LNLSGR"), col("NETINC"), col("NTLNLS"), col("BRO"), col("DEP")]
+                    Parquet SCAN [D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 other sources]
+                    PROJECT 39/40 COLUMNS
+                    ESTIMATED ROWS: 1714681
+        RIGHT PLAN ON: [col("CERT"), col("q")]
+          SELECT [col("CERT"), (col("q") + 4), col("cap_eq_ta").alias("l4_eq"), col("aq_noncurrent").alias("l4_ncl")]
+             WITH_COLUMNS:
+             [when(col("ASSET") > 0.0).then((col("EQ") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("cap_eq_ta"), when(col("LNLSGR") > 0.0).then((col("NCLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_noncurrent"), when(col("ASSET") > 0.0).then((col("NETINC") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("earn_roa"), when(col("LNLSGR") > 0.0).then((col("NTLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_nco"), when(col("DEP") > 0.0).then((col("BRO") / col("DEP")) * 100.0).otherwise(null.cast(Float64)).alias("liq_brokered_dep")] 
+               WITH_COLUMNS:
+               [(col("NETINC") * col("ann")), (col("NTLNLS") * col("ann"))] 
+                 WITH_COLUMNS:
+                 [(((col("REPDTE").dt.year() * 4) + col("REPDTE").dt.quarter().cast(Int32)) - 1).alias("q"), (4 / col("REPDTE").dt.quarter()).alias("ann")] 
+                  FILTER col("ASSET") > 0.0
+                  FROM
+                    SELECT [col("CERT"), col("REPDTE"), col("ASSET"), col("EQ"), col("NCLNLS"), col("LNLSGR"), col("NETINC"), col("NTLNLS"), col("BRO"), col("DEP")]
+                      Parquet SCAN [D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 other sources]
+                      PROJECT 39/40 COLUMNS
+                      ESTIMATED ROWS: 1714681
+        END LEFT JOIN
+    RIGHT PLAN ON: [col("CERT"), col("q")]
+       WITH_COLUMNS:
+       [1.alias("y")] 
+        UNIQUE[maintain_order: false, keep_strategy: Any] BY None
+          SELECT [col("CERT"), col("q")]
+            FILTER ((col("fq") - col("q"))).is_between([1, 4])
+            FROM
+              INNER JOIN:
+              LEFT PLAN ON: [col("CERT")]
+                SELECT [col("CERT"), col("q")]
+                   WITH_COLUMNS:
+                   [when(col("ASSET") > 0.0).then((col("EQ") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("cap_eq_ta"), when(col("LNLSGR") > 0.0).then((col("NCLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_noncurrent"), when(col("ASSET") > 0.0).then((col("NETINC") / col("ASSET")) * 100.0).otherwise(null.cast(Float64)).alias("earn_roa"), when(col("LNLSGR") > 0.0).then((col("NTLNLS") / col("LNLSGR")) * 100.0).otherwise(null.cast(Float64)).alias("aq_nco"), when(col("DEP") > 0.0).then((col("BRO") / col("DEP")) * 100.0).otherwise(null.cast(Float64)).alias("liq_brokered_dep")] 
+                     WITH_COLUMNS:
+                     [(col("NETINC") * col("ann")), (col("NTLNLS") * col("ann"))] 
+                       WITH_COLUMNS:
+                       [(((col("REPDTE").dt.year() * 4) + col("REPDTE").dt.quarter().cast(Int32)) - 1).alias("q"), (4 / col("REPDTE").dt.quarter()).alias("ann")] 
+                        FILTER col("ASSET") > 0.0
+                        FROM
+                          SELECT [col("CERT"), col("REPDTE"), col("ASSET"), col("EQ"), col("NCLNLS"), col("LNLSGR"), col("NETINC"), col("NTLNLS"), col("BRO"), col("DEP")]
+                            Parquet SCAN [D:/bft65b-ews/data_lake/financials/YEAR=1984/00000000.parquet, ... 42 other sources]
+                            PROJECT 39/40 COLUMNS
+                            ESTIMATED ROWS: 1714681
+              RIGHT PLAN ON: [col("CERT")]
+                SELECT [col("CERT"), (((col("FAILDATE").dt.year() * 4) + col("FAILDATE").dt.quarter().cast(Int32)) - 1).alias("fq")]
+                  FILTER col("FAILDATE") >= 1984-01-01
+                  FROM
+                    FILTER col("RESTYPE") == "FAILURE"
+                    FROM
+                      Parquet SCAN [D:/bft65b-ews/data_lake/failures.parquet]
+                      PROJECT */9 COLUMNS
+                      ESTIMATED ROWS: 4117
+              END INNER JOIN
+    END LEFT JOIN
