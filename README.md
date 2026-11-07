@@ -24,6 +24,12 @@ Run every command from the repository root.
 
 ## Run end to end
 
+**Windows, no typing:** double-click `run_all.bat`. It creates `.venv`, installs `requirements.txt` on first
+use, uses a JDK 17 placed in a `jdk17/` folder next to it (or `JAVA_HOME`), and runs every step below
+except `download.py` (it reuses `data_raw/` if present).
+
+Step by step:
+
 ```bash
 python src/download.py          # ~1 h, resumable; writes data_raw/fdic (not committed)
 python src/p1_storage.py        # completeness check, Parquet lake, storage benchmark
@@ -42,8 +48,8 @@ Download method/date used for the report: FDIC BankFind public API (`https://api
 downloaded 2026-11-06, 170 quarters, 1,682,616 bank-quarter rows, 24,064 banks.
 Every result table and figure is written to `outputs/`. Seeds are fixed (`SEED = 42` in `src/common.py`)
 and the feature table is written in a fixed row order, so reruns reproduce the same model results.
-Benchmark timings in Part 3 naturally vary with the machine, and Spark MLlib metrics can differ in the
-fourth decimal between runs (parallel floating-point aggregation). The Failures and Institutions tables are
+Benchmark timings in Part 3 naturally vary with the machine, and Spark MLlib metrics can differ by about
+±0.002 between runs (parallel floating-point aggregation; scikit-learn results are identical every run). The Failures and Institutions tables are
 re-downloaded on every run, so counts that depend on them (e.g. `CHANGEC1` codes) follow FDIC updates.
 
 ## Layout
