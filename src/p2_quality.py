@@ -210,7 +210,8 @@ def main() -> None:
 
     restype = (fails.filter(pl.col("FAILDATE") >= pl.date(1984, 1, 1))
                .group_by("RESTYPE").agg(pl.len().alias("events"),
-                                        pl.col("COST").null_count().alias("COST missing")))
+                                        pl.col("COST").null_count().alias("COST missing"))
+               .sort("RESTYPE"))
     multi = fails.filter(pl.col("CERT").is_duplicated()).select("CERT").n_unique()
     m = panel.filter(pl.col("label_complete"))
     summary = pl.DataFrame({
@@ -220,7 +221,7 @@ def main() -> None:
         "value": [fin.height, fin.filter(~(pl.col("ASSET") > 0)).height,
                   fin.filter(pl.col("ASSET") > 0).height - panel.height, panel.height, m.height,
                   int(m["y"].sum()), m.filter(pl.col("y") == 1)["CERT"].n_unique(), multi]})
-    banks = panel.group_by("_exit_type").agg(pl.col("CERT").n_unique().alias("banks"))
+    banks = panel.group_by("_exit_type").agg(pl.col("CERT").n_unique().alias("banks")).sort("_exit_type")
 
     report = OUT / "p2_dq_report.md"
     parts = [("Panel construction summary", summary), ("Bank exits (treated separately)", banks),

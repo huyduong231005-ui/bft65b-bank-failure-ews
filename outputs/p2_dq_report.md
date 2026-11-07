@@ -25,8 +25,8 @@
 
 | RESTYPE    | events | COST missing |
 |------------|--------|--------------|
-| FAILURE    | 2863   | 23           |
 | ASSISTANCE | 412    | 19           |
+| FAILURE    | 2863   | 23           |
 
 ### Failure coverage in Financials (RESTYPE=FAILURE, 1984+)
 

@@ -16,9 +16,11 @@ Author: _<name, student ID>_ · Course: BFT65B Big Data Analytics in Finance, Na
 
 ```bash
 python -m venv .venv
-.venv/Scripts/activate          # Linux/macOS: source .venv/bin/activate
+.venv\Scripts\Activate.ps1      # Windows PowerShell; Git Bash: source .venv/Scripts/activate; Linux/macOS: source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+Run every command from the repository root.
 
 ## Run end to end
 
@@ -33,12 +35,16 @@ python src/p3_processing.py     # pandas vs Polars vs Spark benchmark, result ma
 python src/p5_mllib.py          # Spark MLlib baseline demo
 python src/export_excel.py      # optional: all result tables in outputs/results.xlsx
 python src/predict.py           # optional: riskiest banks in the latest quarter
-python src/predict.py --cert 31027   # optional: risk-score history of one bank
+python src/predict.py --cert 1252 24735   # optional: risk-score history of banks + chart in outputs/
 ```
 
 Download method/date used for the report: FDIC BankFind public API (`https://api.fdic.gov/banks`),
 downloaded 2026-11-06, 170 quarters, 1,682,616 bank-quarter rows, 24,064 banks.
-Every result table and figure is written to `outputs/`. Seeds are fixed (`SEED = 42` in `src/common.py`).
+Every result table and figure is written to `outputs/`. Seeds are fixed (`SEED = 42` in `src/common.py`)
+and the feature table is written in a fixed row order, so reruns reproduce the same model results.
+Benchmark timings in Part 3 naturally vary with the machine, and Spark MLlib metrics can differ in the
+fourth decimal between runs (parallel floating-point aggregation). The Failures and Institutions tables are
+re-downloaded on every run, so counts that depend on them (e.g. `CHANGEC1` codes) follow FDIC updates.
 
 ## Layout
 
@@ -52,6 +58,9 @@ Every result table and figure is written to `outputs/`. Seeds are fixed (`SEED =
 | `src/p4_features.py` | 4 | leakage test, feature table, dev / gap / test split |
 | `src/p5_model.py` | 5 | baseline vs gradient boosting, expanding-window CV, threshold, test once |
 | `src/p5_mllib.py` | 5 | Spark ML Pipeline demo |
+| `src/common.py` | – | paths, canonical schema, Spark session, helpers |
+| `src/predict.py` | – | try the early-warning model on any bank (CERT), risk-score chart |
+| `src/export_excel.py` | – | collect all result tables into `outputs/results.xlsx` |
 
 Columns starting with `_` in `data_proc/panel.parquet` are label-side (future) information and are
 never used as features.
